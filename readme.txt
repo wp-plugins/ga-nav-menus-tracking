@@ -3,7 +3,7 @@ Contributors: pauldewouters
 Tags: google analytics,navigation,menus
 Requires at least: 3.2
 Tested up to: 3.5
-Stable tag: 1.0.3
+Stable tag: 1.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -39,6 +39,12 @@ I recommend this one: http://wordpress.org/extend/plugins/google-analytics-for-w
 1. The nav menu items fields added by plugin to enter your tracking event parameters (category, action and label)
 
 == Changelog ==
+
+= 1.0.4 =
+added pot file for translators
+
+= 1.0.3 =
+Fixed a bug in javascript
 
 = 1.0 =
 * Initial version relased to the public.
