@@ -3,9 +3,9 @@
 Plugin Name: Google Analytics Nav Menu Tracking
 Plugin URI: http://secretstache.com
 Description: Adds tracking events to your WordPress navigation menu items
-Version: 1.0.5
-Contributors: pauldewouters, secretstache
-Author URI: http://secretstache.com
+Version: 1.0.6
+Author: Paul de Wouters
+Author URI: http://paulwp.com
 License: GPL2
 
     Copyright 2013  Secret Stache Media (email: paul@secretstache.com)
@@ -25,14 +25,8 @@ License: GPL2
 
 */
 
-
 // don't load directly
-if ( ! function_exists( 'is_admin' ) ) {
-	header( 'Status: 403 Forbidden' );
-	header( 'HTTP/1.1 403 Forbidden' );
-	exit();
-}
-
+defined( 'ABSPATH' ) || exit;
 
 if ( ! class_exists( "GA_Nav_Tracking" ) ) :
 
@@ -79,7 +73,6 @@ if ( ! class_exists( "GA_Nav_Tracking" ) ) :
 		 * CALLBACK FUNCTION FOR:  add_action( 'plugins_loaded', array( $this,'load_text_domain'));
 		 * @since 1.0
 		 */
-
 		function load_text_domain() {
 			load_plugin_textdomain( 'ga-nav-menu-tracking', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 		}
@@ -96,9 +89,6 @@ if ( ! class_exists( "GA_Nav_Tracking" ) ) :
 		 * Save the custom field data
 		 */
 		function nav_update( $menu_id, $menu_item_db_id, $args ) {
-			// global $wp_roles;
-
-			//$allowed_roles = apply_filters( 'nav_menu_roles', $wp_roles->role_names );
 
 			// verify this came from our screen and with proper authorization.
 			if ( ! isset( $_POST['ga-nav-menu-tracking-nonce'] ) || ! wp_verify_nonce( $_POST['ga-nav-menu-tracking-nonce'], 'nav-menu-nonce-name' ) )
@@ -125,19 +115,19 @@ if ( ! class_exists( "GA_Nav_Tracking" ) ) :
 			}
 
 			if ( ! empty( $saved_data['category'] ) ) {
-					update_post_meta( $menu_item_db_id, '_nav_menu_ga_category', $saved_data['category'] );
+				update_post_meta( $menu_item_db_id, '_nav_menu_ga_category', $saved_data['category'] );
 			} else{
-					delete_post_meta($menu_item_db_id,'_nav_menu_ga_category' );
+				delete_post_meta($menu_item_db_id,'_nav_menu_ga_category' );
 			}
-			if ( ! empty( $saved_data['action'] )) {
+			if ( ! empty( $saved_data['action'] ) ) {
 				update_post_meta( $menu_item_db_id, '_nav_menu_ga_action', $saved_data['action'] );
 			} else{
-					delete_post_meta($menu_item_db_id,'_nav_menu_ga_action' );
+				delete_post_meta($menu_item_db_id,'_nav_menu_ga_action' );
 			}
 			if ( ! empty( $saved_data['label'] ) ) {
 				update_post_meta( $menu_item_db_id, '_nav_menu_ga_label', $saved_data['label'] );
 			} else{
-					delete_post_meta($menu_item_db_id,'_nav_menu_ga_label' );
+				delete_post_meta($menu_item_db_id,'_nav_menu_ga_label' );
 			}
 
 			if ( ! empty( $saved_data['value'] ) ) {
@@ -159,7 +149,7 @@ if ( ! class_exists( "GA_Nav_Tracking" ) ) :
 		 * event handler script
 		 */
 		function add_tracking( $item_output, $item, $depth, $args ) {
-      // Ref: https://developers.google.com/analytics/devguides/collection/gajs/eventTrackerGuide
+			// Ref: https://developers.google.com/analytics/devguides/collection/gajs/eventTrackerGuide
 			$method = '_trackEvent';
 			$category = get_post_meta( $item->ID, '_nav_menu_ga_category', true );
 			$action = get_post_meta( $item->ID, '_nav_menu_ga_action', true );
@@ -171,16 +161,16 @@ if ( ! class_exists( "GA_Nav_Tracking" ) ) :
 			} else {
 				$non_interaction = false;
 			}
-				return $item_output
-						. '<span style="display:none;" class="ga-tracking"'
-						. ' data-method="' .  $method  . '"'
-						. ' data-category="' .  $category  . '"'
-						. ' data-action="' .  $action  . '"'
-						. ' data-label="' .  $label  . '"'
-						. ' data-value="' .  $value  . '"'
-						. ' data-noninteraction="' .  $non_interaction  . '"'
-						. '>'
-						. '</span>';
+			return $item_output
+			       . '<span style="display:none;" class="ga-tracking"'
+			       . ' data-method="' . esc_attr( $method ) . '"'
+			       . ' data-category="' . esc_attr( $category ) . '"'
+			       . ' data-action="' . esc_attr( $action ) . '"'
+			       . ' data-label="' . esc_attr( $label ) . '"'
+			       . ' data-value="' . esc_attr( $value ) . '"'
+			       . ' data-noninteraction="' .  esc_attr( $non_interaction ) . '"'
+			       . '>'
+			       . '</span>';
 
 		}
 
